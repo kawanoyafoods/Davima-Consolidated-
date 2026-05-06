@@ -851,7 +851,6 @@ async function renderProductMgmt() {
   grid.innerHTML = '<div style="text-align:center;padding:40px;color:var(--muted2)">⏳ Loading products...</div>';
   const products = await getProductsFromDB();
   saveProducts(products); // update local cache
-  const grid = document.getElementById('productMgmtGrid');
   if (!products.length) { grid.innerHTML='<div class="empty-state"><div class="empty-icon">🛍️</div><div class="empty-title">No Products Yet</div><div class="empty-sub">Click "Add Product" to create your first product</div></div>'; return; }
   grid.innerHTML = products.map(p=>{
     const imgHTML = p.img ? `<img src="${p.img}" alt="${p.name}" style="width:100%;height:100%;object-fit:cover">` : `<span>${p.icon}</span>`;
@@ -910,31 +909,6 @@ function openProductModal(product) {
 function closeProductModal() { document.getElementById('productModal').classList.remove('open'); }
 document.getElementById('productModal').addEventListener('click', e=>{ if(e.target===document.getElementById('productModal')) closeProductModal(); });
 
-function handleImageUpload(event) {
-  const file = event.target.files[0];
-  if (!file) return;
-  pendingImageFile = file;
-  uploadedImageData = null;
-  const reader = new FileReader();
-  reader.onload = function(e) {
-    const preview = document.getElementById('imgPreview');
-    preview.src = e.target.result;
-    preview.style.display = 'block';
-    document.getElementById('imgEmojiPreview').style.display = 'none';
-    document.getElementById('imgRemoveBtn').style.display = 'block';
-  };
-  reader.readAsDataURL(file);
-}
-
-function removeImage() {
-  uploadedImageData = null;
-  pendingImageFile = null;
-  document.getElementById('imgPreview').src = '';
-  document.getElementById('imgPreview').style.display = 'none';
-  document.getElementById('imgEmojiPreview').style.display = 'block';
-  document.getElementById('imgRemoveBtn').style.display = 'none';
-  document.getElementById('productImageInput').value = '';
-}
 
 async function saveProduct() {
   const name = document.getElementById('pName').value.trim();
